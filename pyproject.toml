@@ -1,0 +1,114 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vigilai"
+version = "0.1.0"
+description = "AI-enhanced driver fatigue and stress monitoring system"
+authors = [{name = "VigilAI Team", email = "team@vigilai.com"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "tensorflow>=2.15.0",
+    "torch>=2.1.0",
+    "opencv-python>=4.8.0",
+    "mediapipe>=0.10.0",
+    "fastapi>=0.104.0",
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "scipy>=1.11.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.11.0",
+    "flake8>=6.1.0",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+edge = [
+    "jetson-inference>=1.0.0",
+    "jetson-utils>=1.0.0",
+    "pyserial>=3.5",
+    "pybluez>=0.23",
+    "obd>=0.7.0",
+]
+cloud = [
+    "apache-kafka>=2.0.0",
+    "pyspark>=3.5.0",
+    "delta-spark>=3.0.0",
+    "prometheus-client>=0.19.0",
+    "elasticsearch>=8.11.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/vigilai/vigilai"
+Repository = "https://github.com/vigilai/vigilai"
+Issues = "https://github.com/vigilai/vigilai/issues"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=vigilai",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "edge: Edge computing tests",
+    "cloud: Cloud backend tests",
+    "slow: Slow running tests",
+]

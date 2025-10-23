@@ -1,0 +1,54 @@
+{
+  "camera": {
+    "device_id": 0,
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "flip_horizontal": true,
+    "ir_mode": false
+  },
+  "obd": {
+    "port": "/dev/ttyUSB0",
+    "baudrate": 38400,
+    "timeout": 1.0,
+    "collection_interval": 0.1
+  },
+  "wearables": {
+    "device_type": "mock",
+    "connection_timeout": 10.0,
+    "data_interval": 1.0,
+    "mock_data": true
+  },
+  "detection": {
+    "fatigue_threshold": 0.7,
+    "stress_threshold": 0.6,
+    "confidence_threshold": 0.5,
+    "processing_interval": 0.033
+  },
+  "intervention": {
+    "intervention_types": ["audio", "haptic", "visual"],
+    "escalation_levels": 3,
+    "cooldown_period": 30,
+    "audio_enabled": true,
+    "audio_volume": 0.7,
+    "haptic_enabled": true,
+    "haptic_intensity": 0.5,
+    "visual_enabled": true
+  },
+  "data_collection": {
+    "data_dir": "data",
+    "max_memory_records": 1000,
+    "save_interval": 60
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "vigilai.log",
+    "max_size": 10485760,
+    "backup_count": 5
+  },
+  "web_interface": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "debug": false
+  }
+}

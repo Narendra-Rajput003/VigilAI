@@ -1,0 +1,88 @@
+# VigilAI API Gateway Configuration
+
+# Redis Configuration
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+  max_connections: 100
+  retry_on_timeout: true
+
+# JWT Configuration
+jwt:
+  secret_key: "vigilai-super-secret-key-change-in-production"
+  algorithm: "HS256"
+  access_token_expire_minutes: 30
+  refresh_token_expire_days: 7
+
+# CORS Configuration
+cors:
+  allowed_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8000"
+    - "https://vigilai.com"
+    - "https://app.vigilai.com"
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    - "OPTIONS"
+  allowed_headers:
+    - "*"
+
+# Security Configuration
+security:
+  allowed_hosts:
+    - "localhost"
+    - "127.0.0.1"
+    - "vigilai.com"
+    - "*.vigilai.com"
+  rate_limit:
+    requests_per_minute: 1000
+    burst_limit: 100
+  max_request_size: "10MB"
+
+# Service Discovery
+services:
+  user_service:
+    host: "user-service"
+    port: 8001
+    timeout: 30
+    retries: 3
+  device_service:
+    host: "device-service"
+    port: 8002
+    timeout: 30
+    retries: 3
+  data_service:
+    host: "data-service"
+    port: 8003
+    timeout: 30
+    retries: 3
+  model_service:
+    host: "model-service"
+    port: 8004
+    timeout: 30
+    retries: 3
+  analytics_service:
+    host: "analytics-service"
+    port: 8005
+    timeout: 30
+    retries: 3
+
+# Monitoring
+monitoring:
+  metrics_enabled: true
+  health_check_interval: 30
+  log_level: "INFO"
+  enable_tracing: true
+
+# Load Balancing
+load_balancer:
+  algorithm: "round_robin"
+  health_check_path: "/health"
+  health_check_interval: 10
+  unhealthy_threshold: 3
+  healthy_threshold: 2

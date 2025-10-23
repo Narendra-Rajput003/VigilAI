@@ -1,0 +1,289 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      external_labels:
+        cluster: 'vigilai-production'
+        replica: 'prometheus-0'
+
+    rule_files:
+      - "/etc/prometheus/rules/*.yml"
+
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+              - alertmanager:9093
+
+    scrape_configs:
+      # Prometheus itself
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      # Kubernetes API server
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: default;kubernetes;https
+
+      # Kubernetes nodes
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics
+
+      # Kubernetes pods
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+
+      # VigilAI API Gateway
+      - job_name: 'vigilai-api-gateway'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - vigilai
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_name]
+          action: keep
+          regex: api-gateway-service
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: http
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+
+      # VigilAI User Service
+      - job_name: 'vigilai-user-service'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - vigilai
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_name]
+          action: keep
+          regex: user-service
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: http
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+
+      # VigilAI Device Service
+      - job_name: 'vigilai-device-service'
+        kubernetes_sd_configs:
+        - role: endpoints
+          namespaces:
+            names:
+            - vigilai
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_name]
+          action: keep
+          regex: device-service
+        - source_labels: [__meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: http
+        - source_labels: [__meta_kubernetes_namespace]
+          target_label: namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          target_label: service
+
+      # Redis
+      - job_name: 'redis'
+        static_configs:
+        - targets: ['redis:6379']
+
+      # PostgreSQL
+      - job_name: 'postgresql'
+        static_configs:
+        - targets: ['postgresql:5432']
+
+      # Kafka
+      - job_name: 'kafka'
+        static_configs:
+        - targets: ['kafka:9092']
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: monitoring
+data:
+  vigilai-rules.yml: |
+    groups:
+    - name: vigilai.rules
+      rules:
+      # API Gateway rules
+      - alert: APIGatewayHighErrorRate
+        expr: rate(http_requests_total{job="vigilai-api-gateway",status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API Gateway high error rate"
+          description: "API Gateway error rate is {{ $value }} errors per second"
+
+      - alert: APIGatewayHighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="vigilai-api-gateway"}[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API Gateway high latency"
+          description: "API Gateway 95th percentile latency is {{ $value }} seconds"
+
+      # User Service rules
+      - alert: UserServiceHighErrorRate
+        expr: rate(http_requests_total{job="vigilai-user-service",status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "User Service high error rate"
+          description: "User Service error rate is {{ $value }} errors per second"
+
+      # Device Service rules
+      - alert: DeviceServiceHighErrorRate
+        expr: rate(http_requests_total{job="vigilai-device-service",status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Device Service high error rate"
+          description: "Device Service error rate is {{ $value }} errors per second"
+
+      # System resource rules
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value }}% on {{ $labels.instance }}"
+
+      - alert: DiskSpaceLow
+        expr: (1 - (node_filesystem_avail_bytes / node_filesystem_size_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disk space low"
+          description: "Disk usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # Database rules
+      - alert: DatabaseConnectionHigh
+        expr: postgresql_stat_activity_count > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database connections"
+          description: "Database has {{ $value }} active connections"
+
+      # Redis rules
+      - alert: RedisMemoryHigh
+        expr: redis_memory_used_bytes / redis_memory_max_bytes * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis memory usage high"
+          description: "Redis memory usage is {{ $value }}%"
+
+      # Kafka rules
+      - alert: KafkaConsumerLagHigh
+        expr: kafka_consumer_lag_sum > 1000
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Kafka consumer lag high"
+          description: "Kafka consumer lag is {{ $value }} messages"
+
+      # VigilAI specific rules
+      - alert: VigilAIDetectionAccuracyLow
+        expr: vigilai_detection_accuracy < 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "VigilAI detection accuracy low"
+          description: "Detection accuracy is {{ $value }}"
+
+      - alert: VigilAIDeviceOffline
+        expr: time() - vigilai_device_last_seen > 300
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "VigilAI device offline"
+          description: "Device {{ $labels.device_id }} has been offline for {{ $value }} seconds"
+
+      - alert: VigilAIDataProcessingLag
+        expr: vigilai_data_processing_lag_seconds > 60
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "VigilAI data processing lag"
+          description: "Data processing lag is {{ $value }} seconds"
