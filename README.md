@@ -238,11 +238,120 @@ VigilAI is now a **world-class, production-ready driver safety system** that:
 - **Accessibility Guide**: `/shared/accessibility/README.md`
 - **Emergency Setup**: `/shared/safety/README.md`
 
-### Community
+### Community & Repository
+- **GitHub Repository**: [https://github.com/Narendra-Rajput003/VigilAI](https://github.com/Narendra-Rajput003/VigilAI)
 - **GitHub Issues**: Report bugs and request features
+- **Email Contact**: narendrarajput05007@gmail.com
 - **Discord Community**: Join our developer community
-- **Email Support**: support@vigilai.com
 - **Enterprise Sales**: enterprise@vigilai.com
+
+## 🤝 **Contributing to VigilAI**
+
+We welcome contributions from the community! Here's how you can help make VigilAI even better:
+
+### How to Contribute
+
+1. **Fork the Repository**
+   ```bash
+   git clone https://github.com/Narendra-Rajput003/VigilAI.git
+   cd VigilAI
+   ```
+
+2. **Create a Feature Branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Make Your Changes**
+   - Follow our coding standards
+   - Add tests for new features
+   - Update documentation as needed
+
+4. **Test Your Changes**
+   ```bash
+   # Run all tests
+   python tests/test_runner.py
+   
+   # Run specific test suites
+   pytest tests/test_phase1.py -v
+   pytest tests/test_phase2.py -v
+   pytest tests/test_phase3_cloud_backend.py -v
+   pytest tests/test_phase4_deployment.py -v
+   pytest tests/test_system_integration.py -v
+   ```
+
+5. **Submit a Pull Request**
+   - Create a detailed description of your changes
+   - Reference any related issues
+   - Ensure all tests pass
+
+### Contribution Areas
+
+We're looking for contributions in:
+
+- **AI/ML Models**: Improve fatigue and stress detection algorithms
+- **Accessibility**: Enhance accessibility features for users with disabilities
+- **Mobile App**: React Native development and cross-platform features
+- **Emergency Response**: Improve crash detection and emergency services
+- **Documentation**: Improve guides, tutorials, and API documentation
+- **Testing**: Add more comprehensive test coverage
+- **Performance**: Optimize system performance and scalability
+- **Security**: Enhance security features and vulnerability management
+- **Internationalization**: Add support for more languages and regions
+
+### Development Guidelines
+
+- **Code Style**: Follow PEP 8 for Python, ESLint for JavaScript/TypeScript
+- **Testing**: Maintain >90% test coverage
+- **Documentation**: Update README and inline documentation
+- **Accessibility**: Ensure all features are accessible (WCAG 2.1 AA)
+- **Security**: Follow security best practices
+- **Performance**: Optimize for <100ms response times
+
+### Getting Help
+
+- **Email**: narendrarajput05007@gmail.com
+- **GitHub Issues**: [Create an issue](https://github.com/Narendra-Rajput003/VigilAI/issues)
+- **Discussions**: Use GitHub Discussions for questions and ideas
+
+### Recognition
+
+Contributors will be recognized in:
+- **README Contributors section**
+- **Release notes**
+- **Project documentation**
+- **Community highlights**
+
+## 👥 **Contributors**
+
+We thank all contributors who help make VigilAI better:
+
+### Core Team
+- **Narendra Rajput** - Project Lead & Full-Stack Developer
+  - Email: narendrarajput05007@gmail.com
+  - GitHub: [@Narendra-Rajput003](https://github.com/Narendra-Rajput003)
+  - Contributions: System architecture, AI/ML models, mobile app, accessibility features
+
+### How to Join Our Team
+
+We're always looking for passionate developers to join our mission of making driving safer for everyone. If you're interested in:
+
+- **AI/ML Research**: Advanced driver behavior analysis
+- **Mobile Development**: Cross-platform app development
+- **Accessibility**: Making technology accessible to all users
+- **Safety Systems**: Emergency response and crash detection
+- **DevOps**: Cloud infrastructure and deployment
+- **Testing**: Quality assurance and test automation
+
+**Contact us**: narendrarajput05007@gmail.com
+
+### Recognition
+
+Contributors are recognized through:
+- **GitHub Contributors**: Automatic recognition in repository
+- **Release Notes**: Featured in major releases
+- **Documentation**: Listed in project documentation
+- **Community**: Highlighted in community discussions
 
 ## License
 MIT License - See LICENSE file for details
@@ -251,3 +360,6 @@ MIT License - See LICENSE file for details
 
 **VigilAI - Advanced Driver Safety & Wellness System**  
 *Preventing accidents, saving lives, and making driving safer for everyone.*
+
+**Repository**: [https://github.com/Narendra-Rajput003/VigilAI](https://github.com/Narendra-Rajput003/VigilAI)  
+**Contact**: narendrarajput05007@gmail.com
