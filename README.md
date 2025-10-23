@@ -322,36 +322,6 @@ Contributors will be recognized in:
 - **Project documentation**
 - **Community highlights**
 
-## 👥 **Contributors**
-
-We thank all contributors who help make VigilAI better:
-
-### Core Team
-- **Narendra Rajput** - Project Lead & Full-Stack Developer
-  - Email: narendrarajput05007@gmail.com
-  - GitHub: [@Narendra-Rajput003](https://github.com/Narendra-Rajput003)
-  - Contributions: System architecture, AI/ML models, mobile app, accessibility features
-
-### How to Join Our Team
-
-We're always looking for passionate developers to join our mission of making driving safer for everyone. If you're interested in:
-
-- **AI/ML Research**: Advanced driver behavior analysis
-- **Mobile Development**: Cross-platform app development
-- **Accessibility**: Making technology accessible to all users
-- **Safety Systems**: Emergency response and crash detection
-- **DevOps**: Cloud infrastructure and deployment
-- **Testing**: Quality assurance and test automation
-
-**Contact us**: narendrarajput05007@gmail.com
-
-### Recognition
-
-Contributors are recognized through:
-- **GitHub Contributors**: Automatic recognition in repository
-- **Release Notes**: Featured in major releases
-- **Documentation**: Listed in project documentation
-- **Community**: Highlighted in community discussions
 
 ## License
 MIT License - See LICENSE file for details
